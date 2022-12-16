@@ -1,16 +1,10 @@
-import json
-from wsgiref.simple_server import make_server
+from wsgiref.simple_server import make_server, demo_app
 
-def application(environ,start_response):
-    headers = [('Content-type', 'application/json')]
+with make_server('localhost', 8000, demo_app) as httpd:
+    print("Serving HTTP on port 8000...")
 
-    start_response('200 ok',headers)
+    # Respond to requests until process is killed
+    httpd.serve_forever()
 
-    response = {
-        'message' :'hello world in this service'
-    }
-
-    return bytes(json.dumps(response), 'utf-8')
-
-server = make_server('localhost',8080, application)
-server.handle_request()
+    # Alternative: serve one request, then exit
+    httpd.handle_request()
